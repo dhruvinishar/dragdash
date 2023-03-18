@@ -1,6 +1,6 @@
 # Author: Dhruvi Nishar
 # Date: 17/03/23
-
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # All the imports
 #import dash, plotly, and dash for jupyter notebook 
 from dash import dash, html
@@ -17,6 +17,8 @@ from dash.dependencies import Input, Output
 #other packages 
 import pandas as pd
 import numpy as np
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Read the data
 # Data from https://cran.r-project.org/web/packages/dragracer/index.html
@@ -37,14 +39,15 @@ outcome_map = {'OUT': 'OUT', 'LOST1ST ROUND': 'OUT', 'LOST2ND ROUND': 'OUT', 'LO
 rpdr_cp['outcome2'] = rpdr_cp['outcome'].replace(outcome_map)
 
 #filter to winners only 
-winners = rpdr_cp[rpdr_cp['rank'] == 1].drop([676, 1706], axis=0)
-outcomes = winners.groupby('contestant')['participant'].count()
-winners['outcome_count_scaled'] = outcomes / outcomes.sum()
+winners = rpdr_cp[rpdr_cp['rank'] == 1]
+#remove index 1706, 676 for seasons where winner did not compete in first episode
+winners.drop([676, 1706], axis = 0, inplace = True)
 
-#DATA PREPROCESSING: MISS CONGENIALITY 
-missc = rpdr_cp[rpdr_cp['missc'] == 1]
-missc_outcomes = missc.groupby('contestant')['participant'].count()
-missc['outcome_count_scaled'] = missc_outcomes / missc_outcomes.sum()
+#scale outcomes 
+winners['outcome_count'] = winners.groupby('contestant')['participant'].transform('count')
+winners['outcome_count_scaled'] = winners['outcome_count']/winners.groupby('contestant')['outcome_count'].transform('sum')
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -68,12 +71,22 @@ app.layout = html.Div([
     dcc.Graph(
         id='rpdr_graph',
         figure= {}
+    ),
+    html.H6(
+        children = 'Winner Performance in Retrospect',
+        style = {'textAlign': 'center', 
+                 'color': '#FF1D8E',
+                 'font-family': 'Brush Script MT',
+                 'font-size': '55px'}),
+    dcc.Graph(
+        id='winners_graph',
+        figure= {}
     )
 ]
 )
 
 @app.callback( 
-    Output('rpdr_graph', 'figure'), 
+    [Output('rpdr_graph', 'figure'), Output('winners_graph', 'figure')], 
     [Input('season_dropdown', 'value')]) 
 def update_graph(season):
     s_x = rpdr_cp[rpdr_cp['season'] == str(season)]
@@ -91,7 +104,19 @@ def update_graph(season):
     
     fig1.update_traces(marker=dict(line=dict(width=0.7, color='black')))
 
-    return fig1
+    fig2 = px.bar(winners, x = 'contestant', y = 'outcome_count_scaled', color = 'outcome2',
+            labels={'outcome_count_scaled':'Relative Performance', 
+                    'contestant':'Winner (in order of season)',
+                    'outcome2':'Outcome'},
+                 color_discrete_sequence=['#636EFA', '#FF6692', '#00CC96', '#FFA15A', '#FFFF7C'],
+                 category_orders={"outcome2": ["WIN", "HIGH", "SAFE", "LOW", "BOTTOM"]})
+
+    fig2.update_layout(legend_traceorder='normal',
+                       plot_bgcolor='#F7DAE4')
+    
+    fig2.update_traces(marker=dict(line=dict(width=0.7, color='black')))
+
+    return fig1, fig2
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=3333)
