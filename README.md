@@ -27,7 +27,7 @@ This dashboard displays a bar chart that shows the performance of each queen in 
 
 ## Initial Sketch
 
-![sketch](https://github.com/UBC-MDS/dragdash/blob/master/assets/sketch.png)
+![sketch](https://github.com/dhruvinishar/dragdash/blob/master/assets/sketch.png)
 
 ## Installation and Setup
 
