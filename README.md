@@ -25,6 +25,10 @@ This dashboard displays a bar chart that shows the performance of each queen in 
 - BOTTOM (yellow)
 - OUT (grey)
 
+## Initial Sketch
+
+![sketch](https://github.com/UBC-MDS/dragdash/blob/master/assets/sketch.png)
+
 ## Installation and Setup
 
 - Clone this repository to your local machine using 
