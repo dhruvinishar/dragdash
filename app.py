@@ -52,6 +52,7 @@ winners['outcome_count_scaled'] = winners['outcome_count']/winners.groupby('cont
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
 
 app.layout = html.Div([
     html.Img(src='assets/logo.png', height='80px', style={'float': 'left'}),
@@ -108,8 +109,8 @@ def update_graph(season):
             labels={'outcome_count_scaled':'Relative Performance', 
                     'contestant':'Winner (in order of season)',
                     'outcome2':'Outcome'},
-                 color_discrete_sequence=['#636EFA', '#FF6692', '#00CC96', '#FFA15A', '#FFFF7C'],
-                 category_orders={"outcome2": ["WIN", "HIGH", "SAFE", "LOW", "BOTTOM"]})
+                 color_discrete_sequence=['#636EFA', '#FF6692', '#00CC96', '#FFA15A', '#FFFF7C', '#999999'],
+                 category_orders={"outcome2": ["WIN", "HIGH", "SAFE", "LOW", "BOTTOM", "OUT"]})
 
     fig2.update_layout(legend_traceorder='normal',
                        plot_bgcolor='#F7DAE4')
