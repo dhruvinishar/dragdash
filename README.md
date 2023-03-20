@@ -4,6 +4,7 @@
 
 - Link to group repo: https://github.com/UBC-MDS/dragracerviz
 - Link to group Proposal: https://github.com/UBC-MDS/dragracerviz/blob/main/reports/proposal.md
+- Link where the Dash app is deployed: https://dragdash.onrender.com 
 
 ## Introduction
 
