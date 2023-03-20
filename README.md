@@ -80,3 +80,7 @@ Note that all contributions must abide by our [guidelines](CONTRIBUTING.md) and 
 ## License
 
 This project is licensed under the MIT License.
+
+## Reference
+
+The dataset for this project can be found [here](https://cran.r-project.org/web/packages/dragracer/index.html).
